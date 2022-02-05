@@ -1,9 +1,5 @@
 const EC = require("elliptic").ec, ec = new EC("secp256k1");
 
-const MINT_KEY_PAIR = ec.genKeyPair();
-const MINT_PUBLIC_ADDRESS = MINT_KEY_PAIR.getPublic("hex");
-const holderKeyPair = ec.genKeyPair();
-
 
 const { Block } = require("./Block");
 const { Transaction } = require("./Transaction");
@@ -11,18 +7,16 @@ const { Transaction } = require("./Transaction");
 class BlockChain {
 
     constructor () {
-        const firstCoinRelease = new Transaction(MINT_PUBLIC_ADDRESS, holderKeyPair.getPublic("hex"), 1000);
-        this.chain = [new Block(Date.now().toString(), ["Genesis", "Block"])];
+        this.chain = [this.createGenesisBlock()];
         this.blockTime = 10000;
-        this.transactions = [];
+        this.pendingTransactions = [];
         this.reward = 50;
         this.networkDificulty = 1;
     }
+    createGenesisBlock() {
+        return new Block(Date.now().toString(), ["Genesis", "Block"])
+    }
 
-    /**
-     * 
-     * @returns {Block}
-     */
     getPreviousBlock () {
         return this.chain[this.chain.length - 1];
     }
@@ -44,48 +38,24 @@ class BlockChain {
         return balance;
     }
 
-    /**
-     * 
-     * @param {Block} block 
-     */
-    newBlock (block) {
-        block.previousHash = this.getPreviousBlock().hash;
-        block.hash = block.calculateHash();
-
+    minePendingTransactions (miningRewardAddress) {
+        let block = new Block(Date.now(), this.pendingTransactions);
         block.mine(this.networkDificulty);
 
+        console.log('BLOCK MINED ', block.hash);
         this.chain.push(block);
+        // block.data.push([this.pendingTransactions]);
 
-        this.networkDificulty += (
-            Date.now() - parseInt(this.getPreviousBlock().timestamp) < this.blockTime ? 1 : -1
-        );
+        this.pendingTransactions = [
+            new Transaction(null, miningRewardAddress, this.reward)
+        ];
     }
 
     newTransaction (transaction) {
         if (transaction.isValid(transaction, this)) {
-            this.transactions.push(transaction);
+            this.pendingTransactions.push(transaction);
         }
     }
-
-    mineTransactions (rewardAddres) {
-        const rewardTransaction = new Transaction(MINT_PUBLIC_ADDRESS, rewardAddres, this.reward);
-        rewardTransaction.sign(MINT_KEY_PAIR);
-
-        if (this.transactions.length !== 0 ) {
-            this.newBlock(
-                new Block(Date.now().toString(),
-               [new Transaction(CREATE_REWARD_ADDRESS, rewardAddres, this.reward), ...this.transactions])
-           );
-        }
-
-        this.transactions = [];
-    }
-
-    /**
-     * 
-     * @param {this} blockChain 
-     * @returns {boolean}
-     */
 
     checkHealth (blockChain = this) {
         for (let i = 1; i< blockChain.chain.length; i ++) {
