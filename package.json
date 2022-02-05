@@ -1,0 +1,11 @@
+{
+  "name": "satoscoin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "nathan <nathangar01@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "elliptic": "^6.5.4"
+  }
+}
