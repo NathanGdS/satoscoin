@@ -23,13 +23,17 @@ class Block {
         return crypto.createHash('sha256').update(JSON.stringify(this.data) + this.timestamp + this.previousHash + this.nonce).digest('hex');
     }
 
+    /**
+     * 
+     * @param {number} networkDificulty 
+     */
 
     mine (networkDificulty) {
         while (!this.hash.startsWith(
             Array(networkDificulty +1).join("0"))
         ) {
             this.nonce++;
-            this.hash = this.calculateHash();
+            this.hash = this.calculateHash(); 
         }
     }
     
@@ -39,7 +43,8 @@ class BlockChain {
 
     constructor () {
         this.chain = [new Block(Date.now().toString(), ["Genesis", "Block"])];
-        this.networkDificulty = 5;
+        this.networkDificulty = 1;
+        this.blockTime = 30000;
     }
 
     /**
@@ -59,9 +64,20 @@ class BlockChain {
         block.hash = block.calculateHash();
 
         block.mine(this.networkDificulty);
+
         this.chain.push(block);
+
+        this.networkDificulty += (
+            Date.now() - parseInt(this.getPreviousBlock().timestamp) < this.blockTime ? 1 : -1
+        );
     }
 
+
+    /**
+     * 
+     * @param {this} blockChain 
+     * @returns {boolean}
+     */
 
     checkHealth (blockChain = this) {
         for (let i = 1; i< blockChain.chain.length; i ++) {
@@ -85,7 +101,11 @@ const SatosChain = new BlockChain();
 SatosChain.newBlock(new Block(Date.now().toString(),["First", "Block"]));
 SatosChain.newBlock(new Block(Date.now().toString(),["Second", "Block"]));
 SatosChain.newBlock(new Block(Date.now().toString(),["Third", "Block"]));
+SatosChain.newBlock(new Block(Date.now().toString(),["Fourth", "Block"]));
+SatosChain.newBlock(new Block(Date.now().toString(),["Fifth", "Block"]));
+SatosChain.newBlock(new Block(Date.now().toString(),["Sixth", "Block"]));
+SatosChain.newBlock(new Block(Date.now().toString(),["Seventh", "Block"]));
 
 
-console.log(SatosChain.chain);
+console.log(SatosChain);
 
