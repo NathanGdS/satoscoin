@@ -49,13 +49,12 @@ class BlockChain {
         this.chain.push(block);
         // block.data.push([this.pendingTransactions]);
 
-        this.pendingTransactions = [
-            new Transaction(null, miningRewardAddress, this.reward)
-        ];
+        this.pendingTransactions = [];
+
     }
 
     newTransaction (transaction) {
-        if (transaction.isValid(transaction, this)) {
+        if (transaction.isValid(this)) {
             this.pendingTransactions.push(transaction);
         }
     }

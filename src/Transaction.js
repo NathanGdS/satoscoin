@@ -16,23 +16,20 @@ class Transaction {
         }
     }
 
-    isValid () {
+    isValid (chain) {
         if (this.from === null) return true;
 
         if (!this.signature || this.signature.length === 0) {
             throw new Error ('Sem assinatura nessa transacao!');
         }
 
-        const publicKey = ec.keyFromPublic(this.from, 'hex');
-        return publicKey.verify(SHA256(this.from + this.to + this.amount), this.signature)
+        // if (!(chain.getAddressBalance(this.from) >= this.amount)) throw new Error ('Saldo Insuficiente!');
 
-        // return (
-        //     tx.from   &&
-        //     tx.to     &&
-        //     tx.amount &&
-        //     (chain.getAddressBalance(tx.from) >= tx.amount) &&
-        //     ec.keyFromPublic (tx.from, "hex").verify(SHA256(tx.from + tx.to + tx.amount), tx.signature)
-        // );
+        const publicKey = ec.keyFromPublic(this.from, 'hex');
+        return (
+            publicKey.verify(SHA256(this.from + this.to + this.amount), this.signature)
+        )
+
     }
 
 }
