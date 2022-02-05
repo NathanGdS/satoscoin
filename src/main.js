@@ -11,6 +11,7 @@ class Block {
         this.data = data;
         this.hash = this.calculateHash();
         this.previousHash = "";
+        this.nonce = 0;
     }
 
     /**
@@ -19,15 +20,26 @@ class Block {
      */
 
     calculateHash() {
-        return crypto.createHash('sha256').update(JSON.stringify(this.data) + this.timestamp + this.previousHash).digest('hex');
+        return crypto.createHash('sha256').update(JSON.stringify(this.data) + this.timestamp + this.previousHash + this.nonce).digest('hex');
     }
+
+
+    mine (networkDificulty) {
+        while (!this.hash.startsWith(
+            Array(networkDificulty +1).join("0"))
+        ) {
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+    }
+    
 }
 
 class BlockChain {
 
     constructor () {
         this.chain = [new Block(Date.now().toString(), ["Genesis", "Block"])];
-        
+        this.networkDificulty = 5;
     }
 
     /**
@@ -46,6 +58,7 @@ class BlockChain {
         block.previousHash = this.getPreviousBlock().hash;
         block.hash = block.calculateHash();
 
+        block.mine(this.networkDificulty);
         this.chain.push(block);
     }
 
@@ -69,29 +82,10 @@ class BlockChain {
 
 
 const SatosChain = new BlockChain();
-SatosChain.newBlock(
-    new Block(Date.now().toString(),
-    ["First", "Block"]
-    ));
+SatosChain.newBlock(new Block(Date.now().toString(),["First", "Block"]));
+SatosChain.newBlock(new Block(Date.now().toString(),["Second", "Block"]));
+SatosChain.newBlock(new Block(Date.now().toString(),["Third", "Block"]));
 
-SatosChain.newBlock(
-    new Block(Date.now().toString(),
-    ["Second", "Block"]
-    ));
-
-// SatosChain.newBlock(
-//     new Block(Date.now().toString(),
-//     ["Third", "Block"]
-//     ));
 
 console.log(SatosChain.chain);
 
-console.log(
-    `\nA Chain é valida? ${SatosChain.checkHealth()}`
-);
-
-console.log("\nMudando a chain...");
-SatosChain.chain[1].hash = "asyihadsa";
-console.log(
-    `\nA Chain é valida? ${SatosChain.checkHealth()}`
-);
