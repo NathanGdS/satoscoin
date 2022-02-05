@@ -2,6 +2,7 @@ const EC = require("elliptic").ec, ec = new EC("secp256k1");
 
 const MINT_KEY_PAIR = ec.genKeyPair();
 const MINT_PUBLIC_ADDRESS = MINT_KEY_PAIR.getPublic("hex");
+const holderKeyPair = ec.genKeyPair();
 
 
 const { Block } = require("./Block");
@@ -10,6 +11,7 @@ const { Transaction } = require("./Transaction");
 class BlockChain {
 
     constructor () {
+        const firstCoinRelease = new Transaction(MINT_PUBLIC_ADDRESS, holderKeyPair.getPublic("hex"), 1000);
         this.chain = [new Block(Date.now().toString(), ["Genesis", "Block"])];
         this.blockTime = 10000;
         this.transactions = [];
@@ -69,10 +71,12 @@ class BlockChain {
         const rewardTransaction = new Transaction(MINT_PUBLIC_ADDRESS, rewardAddres, this.reward);
         rewardTransaction.sign(MINT_KEY_PAIR);
 
-        this.newBlock(
-             new Block(Date.now().toString(),
-            [new Transaction(CREATE_REWARD_ADDRESS, rewardAddres, this.reward), ...this.transactions])
-        );
+        if (this.transactions.length !== 0 ) {
+            this.newBlock(
+                new Block(Date.now().toString(),
+               [new Transaction(CREATE_REWARD_ADDRESS, rewardAddres, this.reward), ...this.transactions])
+           );
+        }
 
         this.transactions = [];
     }

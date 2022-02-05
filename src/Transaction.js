@@ -22,7 +22,7 @@ class Transaction {
             tx.from   &&
             tx.to     &&
             tx.amount &&
-            chain.getAddressBalance(tx.from) >= tx.amount &&
+            (chain.getAddressBalance(tx.from) >= tx.amount || tx.from === MINT_PUBLIC_ADDRESS && tx.amount === this.reward )&&
             ec.keyFromPublic (tx.from, "hex").verify(SHA256(tx.from + tx.to + tx.amount), tx.signature)
         );
     }
