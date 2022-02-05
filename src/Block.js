@@ -21,8 +21,8 @@ class Block {
         }
     }
 
-    hasValidTransactions (chain) {
-        return this.data.every(transaction => transaction.isValid(transaction, chain));
+    hasValidTransactions () {
+        return this.data.every(transaction => transaction.isValid());
     }
     
 }

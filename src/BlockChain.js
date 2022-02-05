@@ -39,6 +39,9 @@ class BlockChain {
     }
 
     minePendingTransactions (miningRewardAddress) {
+        const rewardTx = new Transaction(null, miningRewardAddress, this.reward);
+        this.pendingTransactions.push(rewardTx);
+
         let block = new Block(Date.now(), this.pendingTransactions);
         block.mine(this.networkDificulty);
 
