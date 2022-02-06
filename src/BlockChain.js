@@ -8,13 +8,13 @@ class BlockChain {
 
     constructor () {
         this.chain = [this.createGenesisBlock()];
-        this.blockTime = 10000;
+        this.blockTime = 1000;
         this.pendingTransactions = [];
         this.reward = 50;
         this.networkDificulty = 1;
     }
     createGenesisBlock() {
-        return new Block(Date.now().toString(), ["Genesis", "Block"])
+        return new Block(Date.now().toString(), ["Genesis", "Block"], '0')
     }
 
     getPreviousBlock () {
@@ -42,14 +42,15 @@ class BlockChain {
         const rewardTx = new Transaction(null, miningRewardAddress, this.reward);
         this.pendingTransactions.push(rewardTx);
 
-        let block = new Block(Date.now(), this.pendingTransactions);
+        let block = new Block(Date.now(), this.pendingTransactions, this.getPreviousBlock().hash);
         block.mine(this.networkDificulty);
 
         console.log('BLOCK MINED ', block.hash);
         this.chain.push(block);
-        // block.data.push([this.pendingTransactions]);
 
         this.pendingTransactions = [];
+
+        this.networkDificulty += Date.now() - parseInt(this.getPreviousBlock().timestamp) < this.blockTime ? 1 : -1;
 
     }
 

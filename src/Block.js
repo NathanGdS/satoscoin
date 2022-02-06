@@ -1,11 +1,11 @@
 const crypto = require("crypto");
 
 class Block {
-    constructor(timestamp, data) {
+    constructor(timestamp, data, previousHash = '') {
         this.timestamp = timestamp;
         this.data = data;
         this.hash = this.calculateHash();
-        this.previousHash = "";
+        this.previousHash = previousHash;
         this.nonce = 0;
     }
     calculateHash() {

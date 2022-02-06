@@ -4,8 +4,16 @@ const key = ec.genKeyPair();
 const publicKey = key.getPublic('hex');
 const privateKey = key.getPrivate('hex');
 
-console.log();
-console.log('Your public key (also your wallet address, freely shareable)\n', publicKey);
+class KeyGenerator {
 
-console.log();
-console.log('Your private key (keep this secret! To sign transactions)\n', privateKey);
+    constructor() {
+        console.log();
+        console.log('Your public key (also your wallet address, freely shareable)\n', publicKey);
+
+        console.log();
+        console.log('Your private key (keep this secret! To sign transactions)\n', privateKey);
+    }
+}
+
+module.exports.KeyGenerator = KeyGenerator;
+
