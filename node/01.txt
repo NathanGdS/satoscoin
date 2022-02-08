@@ -1,0 +1,1 @@
+{"timestamp":"111111111","data":["Genesis","Block"],"hash":"7fe9049da40533a07f155c812db78ef51b6a68b60c54c07c3ce1c8fa1d850e25","previousHash":"0","nonce":0}

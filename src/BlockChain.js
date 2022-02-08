@@ -3,6 +3,7 @@ const EC = require("elliptic").ec, ec = new EC("secp256k1");
 
 const { Block } = require("./Block");
 const { Transaction } = require("./Transaction");
+const { Files } = require("./Files");
 
 class BlockChain {
 
@@ -12,7 +13,13 @@ class BlockChain {
         this.pendingTransactions = [];
         this.reward = 50;
         this.networkDificulty = 1;
+        this.createBlockChain();
     }
+
+    createBlockChain () {
+        if (Files.createBlockChain(this)) return true;
+    }
+
     createGenesisBlock() {
         return new Block(Date.now().toString(), ["Genesis", "Block"], '0')
     }

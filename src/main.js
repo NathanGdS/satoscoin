@@ -2,6 +2,7 @@ const readline = require("readline");
 const { KeyGenerator } = require("./KeyGenerator");
 const { BlockChain } = require("./BlockChain");
 const { Transaction } = require("./Transaction");
+const { Files } = require("./Files");
 
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
@@ -43,7 +44,11 @@ rl.on('line', async (line) => {
             break;
             
         case 'view-chain':
-            console.log(satosCoin);
+            console.log(Files.getCompleteChain().chain);
+            break;
+
+        case 'view-blockchain':
+            console.log(Files.getCompleteChain());
             break;
 
         case 'cls':

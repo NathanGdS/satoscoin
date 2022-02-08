@@ -1,0 +1,1 @@
+{"chain":[{"timestamp":"1644287614828","data":["Genesis","Block"],"hash":"7fe9049da40533a07f155c812db78ef51b6a68b60c54c07c3ce1c8fa1d850e25","previousHash":"0","nonce":0}],"blockTime":1000,"pendingTransactions":[],"reward":50,"networkDificulty":1}
